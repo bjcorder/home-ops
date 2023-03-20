@@ -61,6 +61,9 @@ My current environment is Docker provisioned overtop virtualized Ubuntu Server o
 | [Cloudflare](https://www.cloudflare.com/)       | Domain, DNS and proxy management                                  | ~$30/yr        |
 | [Proton Mail](https://proton.me)                | Secure email, calendar, VPN, and cloud storage                    | ~$11/mo        |
 | [GitHub](https://github.com/)                   | Hosting this repository                                           | Free           |
+| [Shields IO](https://shields.io/)               | Status and version labels for markdown                            | Free           |
+| [CrowdSec](https://www.crowdsec.net/)           | Crowd-sourced, server-based IPS                                   | Free           |
+| [Snyk](https://snyk.io/)                        | Container and dependency scanning                                 | Free           |
 |                                                 |                                                                   | Total: ~$13/mo |
 
 ---
