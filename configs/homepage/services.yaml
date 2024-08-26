@@ -2,17 +2,200 @@
 # For configuration options and examples, please see:
 # https://gethomepage.dev/latest/configs/services
 
-- My First Group:
-    - My First Service:
-        href: http://localhost/
-        description: Homepage is awesome
+- Infrastructure:
+    - PaloAlto Firewall:
+        href: https://10.59.1.1/php/login.php
+        description: PaloAlto Networks PA-220 Firewall
+    - Proxmox Cluster:
+        href: https://10.59.1.240:8006
+        description: Primary Proxmox Cluster
+        widget:
+            type: proxmox
+            url: https://10.59.1.240:8006
+            username: "{{HOMEPAGE_VAR_PROXMOX_API_ID}}"
+            password: "{{HOMEPAGE_VAR_PROXMOX_API_SECRET}}"
+            #node: pve1 # optional
+    - TrueNAS Scale:
+        href: http://10.59.1.5
+        description: Homelab NAS
+        icon: truenas.png
+        widget:
+            type: truenas
+            url: http://10.59.1.5
+            key: "{{HOMEPAGE_VAR_TRUENAS_KEY}}"
+            enablePools: true
+            nasType: scale
+    - Nginx Proxy Manager:
+        href: http://10.59.1.13:81
+        description: Reverse Proxy
+        icon: npm.png
+        widget:
+            type: npm
+            url: http://10.59.1.13:81
+            username: "{{HOMEPAGE_VAR_NPM_USERNAME}}"
+            password: "{{HOMEPAGE_VAR_NPM_PASSWORD}}"
+    - Portainer (local-inside):
+        href: https://10.59.1.13:9443
+        description: Container Management
+        icon: portainer.png
+        widget:
+            type: portainer
+            url: https://10.59.1.13:9443
+            env: 2
+            key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
+    - Portainer (rip.corder.local):
+        href: https://10.59.1.13:9443
+        description: Container Management
+        icon: portainer.png
+        widget:
+            type: portainer
+            url: https://10.59.1.13:9443
+            env: 9
+            key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
+    - Portainer (DMZ-docker01):
+        href: https://10.59.1.13:9443
+        description: Container Management
+        icon: portainer.png
+        widget:
+            type: portainer
+            url: https://10.59.1.13:9443
+            env: 10
+            key: "{{HOMEPAGE_VAR_PORTAINER_KEY}}"
 
-- My Second Group:
-    - My Second Service:
-        href: http://localhost/
-        description: Homepage is the best
-
-- My Third Group:
-    - My Third Service:
-        href: http://localhost/
-        description: Homepage is 😎
+- Services:
+    - Jellyfin:
+        href: https://stream.bjcorder.com
+        description: Jellyfin Server
+        icon: jellyfin.png
+        widget:
+            type: jellyfin
+            url: https://stream.bjcorder.com
+            key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+            enableBlocks: true
+            enableNowPlaying: true
+            enableUser: true
+            showEpisodeNumber: true
+            expandOneStreamToTwoRows: false
+    - Jellyseerr:
+        href: https://jellyseerr.bjcorder.com
+        description: Request Manager For Jellyfin Media
+        icon: jellyseerr.png
+        widget:
+            type: jellyseerr
+            url: https://jellyseerr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_JELLYSEERR_KEY}}"
+    - qBittorrent - Public:
+        href: https://torrent.bjcorder.com
+        description: Public Torrent Client for Linux ISOs
+        icon: qbittorrent.png
+        widget:
+            type: qbittorrent
+            url: https://torrent.bjcorder.com
+            username: "{{HOMEPAGE_VAR_QBITTORRENT_PUBLIC_USER}}"
+            password: "{{HOMEPAGE_VAR_QBITTORRENT_PUBLIC_PASSWORD}}"
+    
+    
+- Media:
+    - qBittorrent - Private:
+        href: http://10.59.1.13:8200/
+        description: Private Torrent Behind VPN
+        icon: qbittorrent.png
+        widget:
+            type: qbittorrent
+            url: http://10.59.1.13:8200
+            username: "{{HOMEPAGE_VAR_QBITTORRENT_PRIVATE_USER}}"
+            password: "{{HOMEPAGE_VAR_QBITTORRENT_PRIVATE_PASSWORD}}"
+    - Tdarr:
+        href: https://tdarr.bjcorder.com
+        description: Automated File Encoding/Conversion
+        icon: tdarr.png
+        widget:
+            type: tdarr
+            url: https://tdarr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_TDARR_KEY}}"
+    - Sonarr:
+        href: https://sonarr.bjcorder.com
+        description: TV Show Download Manager
+        icon: sonarr.png
+        widget:
+            type: sonarr
+            url: https://sonarr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
+            enableQueue: true
+    - Radarr:
+        href: https://radarr.bjcorder.com
+        description: Movie Download Manager
+        icon: radarr.png
+        widget:
+            type: radarr
+            url: https://radarr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
+            enableQueue: true
+    - Bazarr:
+        href: https://bazarr.bjcorder.com
+        description: Subtitle Download Manager for *ARR Stack
+        icon: bazarr.png
+        widget:
+            type: bazarr
+            url: https://bazarr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_BAZARR_KEY}}"
+    - Lidarr:
+        href: https://lidarr.bjcorder.com
+        description: Music Download Manager
+        icon: lidarr.png
+        widget:
+            type: lidarr
+            url: https://lidarr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_LIDARR_KEY}}"
+    - Prowlarr:
+        href: https://prowlarr.bjcorder.com
+        description: Index Manager
+        icon: prowlarr.png
+        widget:
+            type: prowlarr
+            url: https://prowlarr.bjcorder.com
+            key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+    
+- Network/Monitoring:
+    - SpeedTest:
+        href: https://speedtest.bjcorder.com
+        description: SpeedTest Container
+        icon: speedtest.png
+        widget:
+            type: speedtest
+            url: https://speedtest.bjcorder.com
+            bitratePrecision: 3
+    - PiHole 1:
+        href: http://10.59.1.253
+        description: PiHole Primary
+        icon: pihole.png
+        widget:
+            type: pihole
+            url: http://10.59.1.253
+            key: "{{HOMEPAGE_VAR_PIHOLE_KEY_1}}"
+    - PiHole 2:
+        href: http://10.59.1.252
+        description: PiHole Primary
+        icon: pihole.png
+        widget:
+            type: pihole
+            url: http://10.59.1.252
+            key: "{{HOMEPAGE_VAR_PIHOLE_KEY_2}}"
+    - Cloudflare Tunnel 1:
+        href: https://dash.cloudflare.com/login
+        description: Cloudflare tunnel docker-internal
+        icon: cloudflare.png
+        widget:
+            type: cloudflared
+            accountid: "{{HOMEPAGE_VAR_CLOUDFLARE_ACCOUNTID}}"
+            tunnelid: "{{HOMEPAGE_VAR_CLOUDFLARE_TUNNELID_1}}"
+            key: "{{HOMEPAGE_VAR_CLOUDFLARE_API_TOKEN}}"
+    - Cloudflare Tunnel 2:
+        href: https://dash.cloudflare.com/login
+        description: Cloudflare tunnel home lab
+        icon: cloudflare.png
+        widget:
+            type: cloudflared
+            accountid: "{{HOMEPAGE_VAR_CLOUDFLARE_ACCOUNTID}}"
+            tunnelid: "{{HOMEPAGE_VAR_CLOUDFLARE_TUNNELID_1}}"
+            key: "{{HOMEPAGE_VAR_CLOUDFLARE_API_TOKEN}}"
