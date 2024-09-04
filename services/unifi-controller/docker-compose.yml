@@ -1,5 +1,5 @@
 ---
-version: "2"
+version: "3"
 services:
   unifi-controller:
     image: linuxserver/unifi-controller:8.0.24
