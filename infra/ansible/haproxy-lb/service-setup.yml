@@ -4,18 +4,14 @@
   serial: 1
   tasks:
 
-  - name: Install CrowdSec repos
-    ansible.builtin.shell: curl -s https://install.crowdsec.net | sudo sh
-    args:
-      executable: /bin/bash
+  
 
-  - name: Install HAproxy, keepalived, crowdsec
+  - name: Install HAproxy, keepalived, utils
     ansible.builtin.apt:
       pkg:
       - haproxy
       - keepalived
-      - crowdsec
-      - crowdsec-firewall-bouncer-iptables
+      - curl
       update_cache: yes
       
   - name: Copy HAproxy config to service location
@@ -41,6 +37,18 @@
     ansible.builtin.service:
       name: keepalived
       state: restarted
+
+  - name: Install CrowdSec repos
+    ansible.builtin.shell: curl -s https://install.crowdsec.net | sudo sh
+    args:
+      executable: /bin/bash
+
+  - name: Install CrowdSec
+    ansible.builtin.apt:
+      pkg:
+      - crowdsec
+      - crowdsec-firewall-bouncer-iptables
+      update_cache: yes
 
   - name: Enroll CrowdSec console with UI
     ansible.builtin.shell: sudo cscli console enroll -e context $CROWDSEC_ENROLLMENT_KEY
