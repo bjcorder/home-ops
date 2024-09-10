@@ -4,11 +4,13 @@
   serial: 1
   tasks:
 
-  - name: Install HAproxy and keepalived
+  - name: Install HAproxy, keepalived, crowdsec
     ansible.builtin.apt:
       pkg:
       - haproxy
       - keepalived
+      - crowdsec
+      - crowdsec-haproxy-bouncer
       update_cache: yes
       
   - name: Copy HAproxy config to service location
