@@ -1,0 +1,22 @@
+https://kube-vip.io/docs/installation/daemonset/
+
+sudo kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
+
+export VIP=10.59.2.90
+export INTERFACE=enp6s18
+
+sudo apt install containerd jq curl -y
+
+KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
+
+alias kube-vip="sudo ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; sudo ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+
+kube-vip manifest daemonset \
+    --interface $INTERFACE \
+    --address $VIP \
+    --inCluster \
+    --taint \
+    --controlplane \
+    --services \
+    --arp \
+    --leaderElection
