@@ -6,6 +6,8 @@
 
   - name: Install CrowdSec repos
     ansible.builtin.shell: curl -s https://install.crowdsec.net | sudo sh
+    args:
+      executable: /bin/bash
 
   - name: Install HAproxy, keepalived, crowdsec
     ansible.builtin.apt:
