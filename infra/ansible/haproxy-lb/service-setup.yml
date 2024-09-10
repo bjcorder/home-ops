@@ -4,6 +4,9 @@
   serial: 1
   tasks:
 
+  - name: Install CrowdSec repos
+    ansible.builtin.command: curl -s https://install.crowdsec.net | sudo sh
+
   - name: Install HAproxy, keepalived, crowdsec
     ansible.builtin.apt:
       pkg:
