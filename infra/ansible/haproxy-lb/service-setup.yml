@@ -1,6 +1,7 @@
 - hosts: "loadbalancers"
   become: yes
   gather_facts: true
+  serial: 1
   tasks:
 
   - name: Install HAproxy and keepalived
@@ -14,7 +15,6 @@
     ansible.builtin.copy:
       src: "../../../configs/{{ inventory_hostname }}/haproxy.cfg"
       dest: /etc/haproxy/haproxy.cfg
-      force: true
       backup: true
       validate: sudo haproxy -f %s -c
 
@@ -22,7 +22,6 @@
     ansible.builtin.copy:
       src: "../../../configs/{{ inventory_hostname }}/keepalived.conf"
       dest: /etc/keepalived/keepalived.conf
-      force: true
       backup: true
       validate: sudo keepalived -t %s
 
