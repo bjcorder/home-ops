@@ -10,7 +10,7 @@ resource "proxmox_lxc" "haproxy-lb-01" {
     cores           = 1
     memory          = 512
     swap            = 1024
-    start           = true
+    start           = false
     tags            = "ubuntu;terraform;ansible"
 
     ssh_public_keys = <<-EOT
@@ -44,7 +44,7 @@ resource "proxmox_lxc" "haproxy-lb-02" {
     cores           = 1
     memory          = 512
     swap            = 1024
-    start           = true
+    start           = false
     tags            = "ubuntu;terraform;ansible"
 
     ssh_public_keys = <<-EOT
