@@ -1,0 +1,33 @@
+- hosts: "haproxy-lb-ha"
+  become: yes
+  gather_facts: true
+  tasks:
+
+  - name: Install HAproxy and keepalived
+    ansible.builtin.apt:
+      pkg:
+      - haproxy
+      - keepalived
+      update_cache: yes
+      
+  - name: Copy haproxy config to service location
+    ansible.builtin.copy:
+      src: configs/{{ inventory_hostname }}/haproxy.cfg
+      dest: /etc/harpoxy/haproxy.cfg
+      validate: sudo haproxy -f /etc/haproxy/haproxy.cfg -c
+
+  - name: Copy keepalived config to service location
+    ansible.builtin.copy:
+      src: configs/{{ inventory_hostname }}/haproxy.cfg
+      dest: /etc/keepalived/keepalived.conf
+      validate: sudo keepalived -t
+
+  - name: Restart service haproxy
+    ansible.builtin.service:
+      name: haproxy
+      state: restarted
+
+  - name: Restart service keepalived
+    ansible.builtin.service:
+      name: keepalived
+      state: restarted
