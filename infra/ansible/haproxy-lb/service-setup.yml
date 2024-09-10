@@ -13,7 +13,7 @@
   - name: Copy haproxy config to service location
     ansible.builtin.copy:
       src: "../../../configs/{{ inventory_hostname }}/haproxy.cfg"
-      dest: /etc/harpoxy/haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg
       validate: sudo haproxy -f /etc/haproxy/haproxy.cfg -c
 
   - name: Copy keepalived config to service location
