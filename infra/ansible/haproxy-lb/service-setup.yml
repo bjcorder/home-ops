@@ -51,4 +51,4 @@
       update_cache: yes
 
   - name: Enroll CrowdSec console with UI
-    ansible.builtin.shell: sudo cscli console enroll -e context $CROWDSEC_ENROLLMENT_KEY
+    ansible.builtin.shell: "sudo cscli console enroll -e context {{ lookup('ansible.builtin.env', 'CROWDSEC_ENROLLMENT_KEY') }}"
