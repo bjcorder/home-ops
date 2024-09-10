@@ -14,13 +14,13 @@
     ansible.builtin.copy:
       src: "../../../configs/{{ inventory_hostname }}/haproxy.cfg"
       dest: /etc/haproxy/haproxy.cfg
-      validate: sudo haproxy -f /etc/haproxy/haproxy.cfg -c
+      validate: sudo haproxy -f %s -c
 
   - name: Copy keepalived config to service location
     ansible.builtin.copy:
       src: "../../../configs/{{ inventory_hostname }}/haproxy.cfg"
       dest: /etc/keepalived/keepalived.conf
-      validate: sudo keepalived -t
+      validate: sudo keepalived -t %s
 
   - name: Restart service haproxy
     ansible.builtin.service:
