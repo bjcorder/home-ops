@@ -5,7 +5,7 @@
   tasks:
 
   - name: Install CrowdSec repos
-    ansible.builtin.command: curl -s https://install.crowdsec.net | sudo sh
+    ansible.builtin.command: "curl -s https://install.crowdsec.net | sudo sh"
 
   - name: Install HAproxy, keepalived, crowdsec
     ansible.builtin.apt:
@@ -41,4 +41,4 @@
       state: restarted
 
   - name: Enroll CrowdSec console with UI
-    ansible.builtin.command: sudo cscli console enroll -e context $CROWDSEC_ENROLLMENT_KEY
+    ansible.builtin.command: "sudo cscli console enroll -e context $CROWDSEC_ENROLLMENT_KEY"
