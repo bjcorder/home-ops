@@ -1,7 +1,5 @@
 ## Deploys 2 LXC containers used for HAproxy
 
-
-
 resource "proxmox_lxc" "haproxy-lb-01" {
     target_node     = "pve1"
     vmid            = 201
