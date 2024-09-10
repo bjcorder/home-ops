@@ -1,4 +1,4 @@
-- hosts: "haproxy-lb-ha"
+- hosts: "loadbalancers"
   become: yes
   gather_facts: true
   tasks:
