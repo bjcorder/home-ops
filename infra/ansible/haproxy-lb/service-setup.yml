@@ -10,7 +10,7 @@
       - haproxy
       - keepalived
       - crowdsec
-      - crowdsec-haproxy-bouncer
+      - crowdsec-firewall-bouncer-iptables
       update_cache: yes
       
   - name: Copy HAproxy config to service location
@@ -36,3 +36,6 @@
     ansible.builtin.service:
       name: keepalived
       state: restarted
+
+  - name: Enroll CrowdSec console with UI
+    ansible.builtin.command: sudo cscli console enroll -e context $CROWDSEC_ENROLLMENT_KEY
