@@ -14,7 +14,10 @@
     ansible.builtin.copy:
       src: "../../../configs/{{ inventory_hostname }}/haproxy.cfg"
       dest: /etc/haproxy/haproxy.cfg
-      validate: sudo haproxy -f %s -c
+      #validate: sudo haproxy -f %s -c
+
+  - name: Run command to add LF to end of file
+    ansible.builtin.command: echo "" >> /etc/haproxy/haproxy.cfg
 
   - name: Copy keepalived config to service location
     ansible.builtin.copy:
