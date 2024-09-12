@@ -14,7 +14,7 @@ resource "proxmox_lxc" "haproxy-lb-01" {
     tags            = "ubuntu;terraform;ansible"
 
     ssh_public_keys = <<-EOT
-        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILSA6OCUj8N1kjcB/oqeK+Td6u02ePpJfzBXV4Nav56t srvadmin@semaphore-01
+        ${var.ssh_public_key}
     EOT
 
     rootfs {
@@ -48,7 +48,7 @@ resource "proxmox_lxc" "haproxy-lb-02" {
     tags            = "ubuntu;terraform;ansible"
 
     ssh_public_keys = <<-EOT
-        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILSA6OCUj8N1kjcB/oqeK+Td6u02ePpJfzBXV4Nav56t srvadmin@semaphore-01
+        ${var.ssh_public_key}
     EOT
 
     rootfs {

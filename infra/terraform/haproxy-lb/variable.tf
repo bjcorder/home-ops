@@ -10,3 +10,6 @@ variable "PROXMOX_API_TOKEN_SECRET" {
 variable "LXC_PASSWORD" {
     type = string
 }
+variable "ssh_public_key" {
+    type = string
+}
