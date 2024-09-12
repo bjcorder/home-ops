@@ -2,4 +2,4 @@ curl -sfL https://get.k3s.io | K3S_TOKEN=<SECRET>> sh -s - server --cluster-init
 
 curl -sfL https://get.k3s.io | K3S_TOKEN=<SECRET> sh -s - server --tls-san=10.59.2.39 --tls-san=haproxy-lb-k3s.lab.bjcorder.com --server https://10.59.2.40:6443
 
-curl -sfL https://get.k3s.io | K3S_TOKEN=qj7QOWnrSAuNSWO8ZdH5 sh -s - agent --server https://10.59.2.39:6443
+curl -sfL https://get.k3s.io | K3S_TOKEN=<SECRET> sh -s - agent --server https://10.59.2.39:6443
