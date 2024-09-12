@@ -1,0 +1,6 @@
+{
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible/ansible-lint/main/src/ansiblelint/schemas/ansible.json#/$defs/playbook": "file:///home/bcorder/Documents/GitHub/home-ops/infra/ansible/proxmox/cloudinit-image.yml"
+    },
+    "ansible.python.interpreterPath": "/bin/python"
+}
