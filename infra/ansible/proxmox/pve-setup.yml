@@ -16,7 +16,7 @@
   - name: add Ansible ssh key
     authorized_key:
       user: ansible
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILSA6OCUj8N1kjcB/oqeK+Td6u02ePpJfzBXV4Nav56t srvadmin@semaphore-01"
+      key: "{{ ssh_public_key }}"
 
   - name: add ansible to sudoers
     copy:
