@@ -1,5 +1,5 @@
 - hosts: "10.59.1.242"
-  become: false
+  become: true
   gather_facts: true
   vars:
     cloud_image_base_url: https://cloud-images.ubuntu.com/noble/current/
