@@ -7,3 +7,6 @@ variable "PROXMOX_API_TOKEN_ID" {
 variable "PROXMOX_API_TOKEN_SECRET" {
     type = string
 }
+variable "ssh_public_key" {
+    type = string
+}
