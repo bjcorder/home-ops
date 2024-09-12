@@ -30,7 +30,7 @@
       executable: /bin/bash
 
   - name: Attach disk to vm as scsi
-    ansible.builtin.shell: qm set {{ template_id }} --scsihw virtio-scsi-pci --scsi0 {{ storage_location }}:vm-{{ template_id }}-disk-0.raw
+    ansible.builtin.shell: qm set {{ template_id }} --scsihw virtio-scsi-pci --scsi0 {{ storage_location }}:{{ template_id }}/vm-{{ template_id }}-disk-0
     args:
       chdir: /var/lib/vz/template/iso/
       executable: /bin/bash
