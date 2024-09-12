@@ -1,0 +1,47 @@
+- hosts: "10.59.1.242"
+  become: false
+  gather_facts: true
+  vars:
+    cloud_image_base_url: https://cloud-images.ubuntu.com/noble/current/
+    cloud_image_file: noble-server-cloudimg-amd64.img
+    template_id: 8000
+    template_name: ubuntu-cloud-template
+    cores: 1
+    memory: 512
+    storage_location: nfs-cluster-stor2
+
+  tasks:
+  - name: Download Ubuntu Server cloud image
+    ansible.builtin.shell: "wget {{ cloud_image_base_url }}{{ cloud_image_file }}"
+    args:
+      executable: /bin/bash
+
+  - name: Create base template
+    ansible.builtin.shell: "qm create {{ template_id }} --memory {{ memory }} --core {{ cores }} --name {{ template_name }} --net0 virtio,bridge=vmbr0"
+    args:
+      executable: /bin/bash
+
+  - name: Import cloud image into template with nfs-cluster-stor2 storage
+    ansible.builtin.shell: qm disk import {{ template_id }} {{ cloud_image_file }} {{ storage_location }}
+    args:
+      executable: /bin/bash
+
+  - name: Attach disk to vm as scsi
+    ansible.builtin.shell: qm set {{ template_id }} --scsihw virtio-scsi-pci --scsi0 {{ storage_location }}:vm-{{ template_id }}-disk-0
+    args:
+      executable: /bin/bash
+
+  - name: Add cloud-init drive
+    ansible.builtin.shell: qm set {{ template_id }} --ide2 {{ storage_location }}:cloudinit
+    args:
+      executable: /bin/bash
+
+  - name: Make cloud-init drive bootable and limit boot to disk only
+    ansible.builtin.shell: qm set {{ template_id }} --boot c --bootdisk scsi0
+    args:
+      executable: /bin/bash
+
+  - name: Attach serial console
+    ansible.builtin.shell: qm set {{ template_id }} --serial0 socket --vga serial0
+    args:
+      executable: /bin/bash
