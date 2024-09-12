@@ -8,7 +8,7 @@
     template_name: ubuntu-cloud-template
     cores: 1
     memory: 512
-    storage_location: nfs-cluster-stor2
+    storage_location: local
 
   tasks:
   - name: Download Ubuntu Server cloud image
