@@ -1,52 +1,86 @@
-/* Uses Cloud-Init options from Proxmox 5.2 */
-resource "proxmox_vm_qemu" "cloudinit-test" {
-  name        = "cloudinit-test"
-  desc        = "tf description"
-  target_node = "pve3"
+data "local_file" "ssh_public_key" {
+  filename = var.ssh_public_key_file
+}
 
-  clone = "ubuntu-cloud-template"
+resource "proxmox_virtual_environment_file" "cloud_config" {
+  content_type = "snippets"
+  datastore_id = "nfs-cluster-stor2"
+  node_name    = "pve1"
 
-  # The destination resource pool for the new VM
-  #pool = "pool0"
+  source_raw {
+    data = <<-EOF
+    #cloud-config
+    users:
+      - default
+      - name: ${var.ssh_user}
+        groups:
+          - sudo
+        shell: /bin/bash
+        ssh_authorized_keys:
+          - ${trimspace(data.local_file.ssh_public_key.content)}
+        sudo: ALL=(ALL) NOPASSWD:ALL
+    runcmd:
+        - apt update
+        - apt install -y qemu-guest-agent net-tools
+        - timedatectl set-timezone America/Chicago
+        - systemctl enable qemu-guest-agent
+        - systemctl start qemu-guest-agent
+        - echo "done" > /tmp/cloud-config.done
+    EOF
 
-  #storage = "nfs-cluster-stor2"
-  cores   = 3
-  sockets = 1
-  memory  = 2560
-  #disk_gb = 4
+    file_name = "cloud-config.yaml"
+  }
+}
 
-  network {
-    model = "virtio"
-    #name   = "eth0"
-    bridge = "vmbr0"
-    #ip     = "dhcp"
-    tag = 99
+resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
+  content_type = "iso"
+  datastore_id = "nfs-iso2"
+  node_name    = "pve1"
+
+  url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+}
+
+resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
+  name      = "test-ubuntu"
+  node_name = "pve3"
+
+  agent {
+    enabled = true
   }
 
+  cpu {
+    cores = 2
+  }
 
-  disks {
-    ide {
-      ide0 {
-        cloudinit {
-          storage = "nfs-cluster-stor2"
-        }
+  memory {
+    dedicated = 2048
+  }
+
+  disk {
+    datastore_id = "nfs-cluster-stor2"
+    file_id      = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
+    interface    = "virtio0"
+    iothread     = true
+    discard      = "on"
+    size         = 20
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "dhcp"
       }
     }
+
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
   }
 
-  os_type   = "cloud-init"
-  ipconfig0 = "ip=10.59.99.221/24,gw=10.59.99.254"
-  ciupgrade = true
-  ciuser = "srvadmin"
-  nameserver = "10.59.1.253,10.59.1.252"
-
-  sshkeys = <<EOF
-${ssh_public_key}
-EOF
-
-  provisioner "remote-exec" {
-    inline = [
-      "ip a"
-    ]
+  network_device {
+    bridge = "vmbr0"
   }
+
+}
+
+output "vm_ipv4_address" {
+  value = proxmox_virtual_environment_vm.ubuntu_vm.ipv4_addresses[1][0]
 }

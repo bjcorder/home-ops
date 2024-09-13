@@ -1,12 +1,15 @@
-variable "PROXMOX_API_URL" {
+variable "proxmox_api_url" {
     type = string
 }
-variable "PROXMOX_API_TOKEN_ID" {
+variable "proxmox_api_token" {
     type = string
 }
-variable "PROXMOX_API_TOKEN_SECRET" {
+variable "ssh_user" {
     type = string
 }
-variable "ssh_public_key" {
+variable "ssh_private_key_file" {
+    type = string
+}
+variable "ssh_public_key_file" {
     type = string
 }
