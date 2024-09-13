@@ -1,0 +1,114 @@
+- hosts: "torrelays"
+  become: yes
+  gather_facts: true
+  tasks:
+
+  ### Update/upgrade all packages
+
+    - name: Upgrade all packages - apt
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+
+  ### Remove dependencies that are no longer required
+
+    - name: Remove dependencies that are no longer required (apt)
+      ansible.builtin.apt:
+        autoremove: yes
+
+  ## Add repos 
+
+    - name: Copy tor repo file to target
+      ansible.builtin.copy:
+        src: "../../../configs/tor-relay/tor.list"
+        dest: /etc/apt/sources.list.d/tor.list
+        backup: true
+
+    - name: Add TOR gpg key
+      ansible.builtin.shell: "wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | sudo tee /usr/share/keyrings/deb.torproject.org-keyring.gpg >/dev/null"
+      args:
+        executable: /bin/bash
+
+  ### Install required packages 
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        pkg:
+        - unattended-upgrades
+        - apt-transport-https
+        - tor
+        - deb.torproject.org-keyring
+        - nyx
+        state: present
+        update_cache: yes
+
+  ### Configure unattended-upgrades service
+    - name: Enable service unattended-upgrades
+      ansible.builtin.service:
+        name: unattended-upgrades
+        enabled: yes
+
+    - name: Copy 20auto-upgrades config to target
+      ansible.builtin.copy:
+        src: "../../../configs/tor-relay/20auto-upgrades"
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        backup: true
+
+    - name: Copy 50unattended-upgrades config to target
+      ansible.builtin.copy:
+        src: "../../../configs/tor-relay/50unattended-upgrades"
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        backup: true
+
+    - name: Restart service unattended-upgrades, in all cases
+      ansible.builtin.service:
+        name: unattended-upgrades
+        state: restarted
+
+  ### Configure TOR service
+    - name: Copy torrc config to target
+      ansible.builtin.copy:
+        src: "../../../configs/tor-relay/torrc"
+        dest: /etc/tor/torrc
+        backup: true
+
+    - name: TOR Config - add TOR_CONTROL_PORT
+      ansible.builtin.lineinfile:
+        path: /etc/tor/torrc
+        search_string: 'TOR_CONTROL_PORT'
+        line: {{ TOR_CONTROL_PORT }}
+
+    - name: TOR Config - add TOR_OR_PORT
+      ansible.builtin.lineinfile:
+        path: /etc/tor/torrc
+        search_string: 'TOR_OR_PORT'
+        line: {{ TOR_OR_PORT }}
+
+    - name: TOR Config - add TOR_NICKNAME
+      ansible.builtin.lineinfile:
+        path: /etc/tor/torrc
+        search_string: 'TOR_NICKNAME'
+        line: {{ TOR_NICKNAME }}
+
+    - name: TOR Config - add TOR_CONTACT_INFO
+      ansible.builtin.lineinfile:
+        path: /etc/tor/torrc
+        search_string: 'TOR_NICKNAME'
+        line: {{ TOR_CONTACT_INFO }}
+
+    - name: Restart service tor@default
+      ansible.builtin.service:
+        name: tor@default
+        state: restarted
+
+  ### Check for reboot required; reboot if required
+
+    - name: Check if a reboot is required.
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+        get_md5: no
+      register: reboot_required_file
+
+    - name: Reboot the server (if required).
+      ansible.builtin.reboot:
+      when: reboot_required_file.stat.exists == true
