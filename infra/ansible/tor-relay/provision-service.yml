@@ -76,25 +76,25 @@
       ansible.builtin.lineinfile:
         path: /etc/tor/torrc
         search_string: 'TOR_CONTROL_PORT'
-        line: {{ TOR_CONTROL_PORT }}
+        line: "{{ TOR_CONTROL_PORT }}"
 
     - name: TOR Config - add TOR_OR_PORT
       ansible.builtin.lineinfile:
         path: /etc/tor/torrc
         search_string: 'TOR_OR_PORT'
-        line: {{ TOR_OR_PORT }}
+        line: "{{ TOR_OR_PORT }}"
 
     - name: TOR Config - add TOR_NICKNAME
       ansible.builtin.lineinfile:
         path: /etc/tor/torrc
         search_string: 'TOR_NICKNAME'
-        line: {{ TOR_NICKNAME }}
+        line: "{{ TOR_NICKNAME }}"
 
     - name: TOR Config - add TOR_CONTACT_INFO
       ansible.builtin.lineinfile:
         path: /etc/tor/torrc
         search_string: 'TOR_NICKNAME'
-        line: {{ TOR_CONTACT_INFO }}
+        line: "{{ TOR_CONTACT_INFO }}"
 
     - name: Restart service tor@default
       ansible.builtin.service:
