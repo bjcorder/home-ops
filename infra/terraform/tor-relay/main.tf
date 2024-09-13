@@ -23,12 +23,11 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         sudo: ALL=(ALL) NOPASSWD:ALL
     runcmd:
         - apt update
-        - apt install -y qemu-guest-agent net-tools unattended-upgrades
+        - apt install -y qemu-guest-agent net-tools
         - timedatectl set-timezone America/Chicago
         - hostnamectl set-hostname tor-relay-01
         - systemctl enable qemu-guest-agent
         - systemctl start qemu-guest-agent
-        - dpkg-reconfigure --priority=low unattended-upgrades
         - echo "done" > /tmp/cloud-config.done
     EOF
 
