@@ -29,6 +29,10 @@
       args:
         executable: /bin/bash
 
+    - name: Add i2pd stable repository from PPA and install its signing key
+      ansible.builtin.apt_repository:
+        repo: ppa:purplei2p/i2pd
+
   ### Install required packages 
 
     - name: Install required packages
@@ -39,6 +43,7 @@
         - tor
         - deb.torproject.org-keyring
         - nyx
+        - i2pd
         state: present
         update_cache: yes
 
@@ -60,7 +65,7 @@
         dest: /etc/apt/apt.conf.d/50unattended-upgrades
         backup: true
 
-    - name: Restart service unattended-upgrades, in all cases
+    - name: Restart service unattended-upgrades
       ansible.builtin.service:
         name: unattended-upgrades
         state: restarted
@@ -99,6 +104,19 @@
     - name: Restart service tor@default
       ansible.builtin.service:
         name: tor@default
+        state: restarted
+
+  ### Configure i2p service
+
+    - name: Copy i2pd config to target
+      ansible.builtin.copy:
+        src: "../../../configs/tor-relay/i2pd.conf"
+        dest: /var/lib/i2pd/i2pd.conf
+        backup: true
+
+    - name: Restart service i2pd
+      ansible.builtin.service:
+        name: i2pd.service
         state: restarted
 
   ### Check for reboot required; reboot if required
