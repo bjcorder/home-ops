@@ -1,4 +1,4 @@
-data "local_file" "ssh_public_key" {
+data "local_sensitive_file" "ssh_public_key" {
   filename = var.ssh_public_key_file
 }
 
