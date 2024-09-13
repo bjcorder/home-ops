@@ -7,7 +7,7 @@ data "local_sensitive_file" "ssh_public_key" {
 resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
   datastore_id = "nfs-cluster-stor2"
-  node_name    = "pve1"
+  node_name    = "pve3"
 
   source_raw {
     data = <<-EOF
@@ -23,10 +23,12 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
         sudo: ALL=(ALL) NOPASSWD:ALL
     runcmd:
         - apt update
-        - apt install -y qemu-guest-agent net-tools
+        - apt install -y qemu-guest-agent net-tools unattended-upgrades
         - timedatectl set-timezone America/Chicago
+        - hostnamectl set-hostname tor-relay-01
         - systemctl enable qemu-guest-agent
         - systemctl start qemu-guest-agent
+        - dpkg-reconfigure --priority=low unattended-upgrades
         - echo "done" > /tmp/cloud-config.done
     EOF
 
@@ -37,40 +39,68 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
 resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   content_type = "iso"
   datastore_id = "nfs-iso2"
-  node_name    = "pve1"
+  node_name    = "pve3"
 
   url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
 }
 
-resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
-  name      = "test-ubuntu"
+resource "proxmox_virtual_environment_vm" "tor-relay-01" {
+  name      = "tor-relay-01"
   node_name = "pve3"
+  description = "Managed by Terraform & Ansible"
+  tags      = ["terraform", "ubuntu", "ansible"]
+  on_boot   = true
+
+  bios      = "ovmf"
+  machine   = "q35"
 
   agent {
     enabled = true
   }
 
+  operating_system {
+    type      = "l26"
+  }
+
   cpu {
+    architecture  = "x86_64"
     cores = 2
+    sockets = 1
+    type = "x86-64-v2-AES"
+    numa  = false
   }
 
   memory {
     dedicated = 2048
   }
 
+  efi_disk {
+    datastore_id  = "nfs-cluster-stor2"
+    file_format   = "qcow2"
+    type          = "4m"
+    pre_enrolled_keys = true
+  }
+
   disk {
-    datastore_id = "nfs-cluster-stor2"
-    file_id      = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
-    interface    = "virtio0"
-    iothread     = true
-    discard      = "on"
-    size         = 20
+    datastore_id  = "nfs-cluster-stor2"
+    file_id       = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
+    interface     = "virtio0"
+    file_format   = "qcow2"
+    iothread      = true
+    backup        = true
+    ssd           = false
+    discard       = "on"
+    size          = 20
   }
 
   initialization {
+    dns {
+      servers   = ["1.1.1.1", "8.8.8.8"]
+    }
     ip_config {
       ipv4 {
-        address = "dhcp"
+        address = "10.59.99.221/24"
+        gateway = "10.59.99.254"
       }
     }
 
@@ -79,10 +109,12 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
 
   network_device {
     bridge = "vmbr0"
+    model       = "virtio"
+    vlan_id = 99
   }
 
 }
 
 output "vm_ipv4_address" {
-  value = proxmox_virtual_environment_vm.ubuntu_vm.ipv4_addresses[1][0]
+  value = proxmox_virtual_environment_vm.tor-relay-01.ipv4_addresses[1][0]
 }
