@@ -40,7 +40,7 @@ resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   datastore_id = "nfs-iso2"
   node_name    = "pve3"
 
-  url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  url = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img"
 }
 
 resource "proxmox_virtual_environment_vm" "tor-relay-01" {
